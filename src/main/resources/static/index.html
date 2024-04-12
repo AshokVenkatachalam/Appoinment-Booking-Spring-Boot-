@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Cabs</title>
+</head>
+<body>
+    <h2>Available Cabs</h2>
+    <table id="cabTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cab Name</th>
+                <th>Cab Number</th>
+                <th>Driver Name</th>
+                <th>Flag</th>
+            </tr>
+        </thead>
+        <tbody id="cabTableBody">
+            <!-- Table rows will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/api/availablecabs')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data:', data); // Log the data to the console
+                const cabTableBody = document.getElementById('cabTableBody');
+                data.forEach(cab => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${cab.id}</td>
+                        <td>${cab.cabName}</td>
+                        <td>${cab.cabNumber}</td>
+                        <td>${cab.driverName}</td>
+                        <td>${cab.flag}</td>
+                    `;
+                    cabTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>
