@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Booked Appointments</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Booked Appointments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Doctor Email</th>
+                <th>Flag</th> <!-- Added flag column header -->
+            </tr>
+        </thead>
+        <tbody id="appointmentsTableBody">
+            <!-- Appointments data will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/api/viewbookedapoointment')
+        .then(response => response.json())
+        .then(data => {
+            const appointmentsTableBody = document.getElementById('appointmentsTableBody');
+
+            data.forEach(appointment => {
+                const row = document.createElement('tr');
+
+                const dateCell = document.createElement('td');
+                dateCell.textContent = appointment.date;
+                row.appendChild(dateCell);
+
+                const timeCell = document.createElement('td');
+                timeCell.textContent = appointment.time;
+                row.appendChild(timeCell);
+
+                const doctorEmailCell = document.createElement('td');
+                doctorEmailCell.textContent = appointment.docemail;
+                row.appendChild(doctorEmailCell);
+
+                // Add flag column
+                const flagCell = document.createElement('td');
+                flagCell.textContent = appointment.flag === 1 ? 'Not Confirmed' : 'Confirmed';
+                row.appendChild(flagCell);
+
+                appointmentsTableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>

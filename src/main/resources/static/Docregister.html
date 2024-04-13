@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration</title>
+</head>
+<body>
+    <h2>Doctor Registration</h2>
+    <form id="registrationForm" method="post" onsubmit="registerDoctor(event)">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="specialist">Specialist:</label><br>
+        <input type="text" id="specialist" name="specialist" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <input type="submit" value="Register">
+    </form>
+
+    <script>
+        function registerDoctor(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('registrationForm');
+            const formData = new FormData(form);
+
+            fetch('/api/docregister', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Registration Success');
+                    form.reset();
+                    window.location.href = 'http://localhost:8089/doclogin.html'; // Redirect to doclogin.html
+                } else if (response.status === 400) {
+                    alert('Email already exists');
+                    window.location.href = 'http://localhost:8089/doclogin.html'; // Redirect to doclogin.html
+                } else {
+                    alert('Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

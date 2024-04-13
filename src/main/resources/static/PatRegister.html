@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration</title>
+</head>
+<body>
+    <h2>Patient Registration</h2>
+    <form id="registrationForm" onsubmit="registerPatient(event)">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="dob">Date of Birth:</label><br>
+        <input type="date" id="dob" name="dob" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <input type="submit" value="Register">
+    </form>
+
+    <script>
+        function registerPatient(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('registrationForm');
+            const formData = new FormData(form);
+
+            fetch('/api/patregister', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Registration Success');
+                    form.reset();
+                    // Redirect to login page or dashboard after successful registration
+                    window.location.href = 'http://localhost:8089/patlogin.html';
+                } else if (response.status === 400) {
+                    alert('Email already exists');
+                } else {
+                    alert('Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

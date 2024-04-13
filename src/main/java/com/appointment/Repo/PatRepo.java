@@ -1,6 +1,8 @@
 package com.appointment.Repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.appointment.model.AppointmentModel;
 import com.appointment.model.PatModel;
 
 public interface PatRepo extends JpaRepository<PatModel, Long>{
@@ -9,4 +11,5 @@ public interface PatRepo extends JpaRepository<PatModel, Long>{
 
 	PatModel findByEmail(String email);
 
+	
 }

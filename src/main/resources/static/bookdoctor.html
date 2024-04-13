@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Doctor</title>
+</head>
+<body>
+    <h2>Book Doctor</h2>
+    <form id="bookingForm" onsubmit="bookAppointment(event)">
+        <label for="docEmail">Doctor Email:</label><br>
+        <input type="text" id="docEmail" name="docEmail" readonly><br><br>
+
+        <label for="date">Date:</label><br>
+        <input type="date" id="date" name="date" required><br><br>
+
+        <label for="time">Time:</label><br>
+        <input type="time" id="time" name="time" required><br><br>
+
+        <input type="submit" value="Book Appointment">
+    </form>
+
+    <script>
+        function bookAppointment(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('bookingForm');
+            const formData = new FormData(form);
+            const docEmail = formData.get('docEmail'); // Retrieve doctor's email from form
+
+            fetch('/api/bookappoint', {
+                method: 'POST',
+                body: JSON.stringify({
+                    docemail: docEmail, // Include doctor's email in request body
+                    date: formData.get('date'),
+                    time: formData.get('time')
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Appointment Booked');
+                    form.reset();
+                    window.location.href = 'http://localhost:8089/patdashboard.html';
+                    // Redirect or perform any other action after booking appointment
+                } else if (response.status === 400) {
+                    alert('Appointment Already Booked on this Date');
+                    window.location.href = 'http://localhost:8089/patdashboard.html';
+                } else {
+                    alert('Failed to book appointment');
+                    window.location.href = 'http://localhost:8089/patdashboard.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to retrieve URL parameter by name
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Retrieve docemail parameter from URL and update form element
+        const docEmail = getParameterByName('docemail');
+        const docEmailInput = document.getElementById('docEmail');
+        if (docEmailInput) {
+            docEmailInput.value = docEmail;
+        }
+    </script>
+</body>
+</html>

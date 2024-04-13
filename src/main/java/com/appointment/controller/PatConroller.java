@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.appointment.Repo.AppointmentRepo;
 import com.appointment.Repo.DocRepo;
 import com.appointment.Repo.PatRepo;
 import com.appointment.model.AppointmentModel;
@@ -21,16 +23,21 @@ import com.appointment.model.PatModel;
 @RestController
 @RequestMapping("/api/")
 public class PatConroller {
-	
+
 	@Autowired
 	private PatRepo patrepo;
-	
+
 	@Autowired
 	private DocRepo docrepo;
 
-	public PatConroller(PatRepo patrepo, DocRepo docrepo) {
+	@Autowired
+	private AppointmentRepo appointrepo;
+
+	public PatConroller(PatRepo patrepo, DocRepo docrepo, AppointmentRepo appointrepo) {
+		super();
 		this.patrepo = patrepo;
 		this.docrepo = docrepo;
+		this.appointrepo = appointrepo;
 	}
 
 	@PostMapping("/patregister")
@@ -53,39 +60,76 @@ public class PatConroller {
 
 	@PostMapping("/patlogin")
 	public ResponseEntity<String> docLogin(@RequestBody PatModel patmodel) {
-		
-		PatModel checkuser=	patrepo.findByEmail(patmodel.getEmail());
-	if (checkuser != null) {
-		if (checkuser.getPassword().equals(patmodel.getPassword()) ) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Login Success");
-		}else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Password");
+
+		PatModel checkuser = patrepo.findByEmail(patmodel.getEmail());
+		if (checkuser != null) {
+			if (checkuser.getPassword().equals(patmodel.getPassword())) {
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body("Login Success");
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Password");
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Failed");
 		}
-	} else {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Failed");
 	}
-	}
-	
+
 	@GetMapping("/viewdoctors")
-	public ResponseEntity<List<DocModel>> viewDoctors(){
-		
-	List<DocModel> listdoc=docrepo.findAll();
-		
+	public ResponseEntity<List<DocModel>> viewDoctors() {
+
+		List<DocModel> listdoc = docrepo.findAll();
+
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(listdoc);
 	}
-	
-	@PostMapping("/bookappoint/{email}")
-	public ResponseEntity<String> bookDoctor(@RequestBody AppointmentModel appointmodel, @PathVariable String email){
-		
-		AppointmentModel bookappointment=new AppointmentModel();
-		bookappointment.setDate(appointmodel.getDate());
-		bookappointment.setDocemail(appointmodel.getDocemail());
-		bookappointment.setPatemail(appointmodel.getPatemail());
-		bookappointment.setTime(appointmodel.getTime());
-		
-		
-		return null;
+
+	@PostMapping("/bookappoint")
+	public ResponseEntity<String> bookDoctor(@RequestBody AppointmentModel appointmodel) {
+		String sessionemail = "ashokpat@gmail.com";
+		AppointmentModel appointmentcheck = appointrepo.findByPatemailAndDocemail(sessionemail,
+				appointmodel.getDocemail());
+		if (appointmentcheck == null) {
+			AppointmentModel bookappointment = new AppointmentModel();
+			bookappointment.setDate(appointmodel.getDate());
+			bookappointment.setDocemail(appointmodel.getDocemail());
+			bookappointment.setPatemail(sessionemail);
+			bookappointment.setTime(appointmodel.getTime());
+			bookappointment.setFlag(1);
+			appointrepo.save(bookappointment);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Appointment Booked");
+		} else {
+			if (appointmentcheck.getDate().equals(appointmodel.getDate())) {
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body("Appointment Already Booked in this date");
+			} else {
+				AppointmentModel bookappointment = new AppointmentModel();
+				bookappointment.setDate(appointmodel.getDate());
+				bookappointment.setDocemail(appointmodel.getDocemail());
+				bookappointment.setPatemail(sessionemail);
+				bookappointment.setTime(appointmodel.getTime());
+				bookappointment.setFlag(1);
+				appointrepo.save(bookappointment);
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body("Appointment Booked");
+			}
+		}
 	}
 	
+	@GetMapping("/viewbookedapoointment")
+	public ResponseEntity<?> viewBookedAppointmetns(){
+		
+		String sessionemail = "ashokpat@gmail.com";
+		
+		
+		List<AppointmentModel> getpateemail= appointrepo.findByPatemail(sessionemail);
+		
+		if (getpateemail.isEmpty()) {
+			
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("No Appointments");
+		} else {
+			
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(getpateemail);
+
+		}
+		
+		
+		
+	}
 
 }

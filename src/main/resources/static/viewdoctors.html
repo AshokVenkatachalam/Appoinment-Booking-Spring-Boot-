@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Doctors</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Doctors List</h2>
+    <table id="doctorTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Specialist</th>
+                  <th>Book</th>
+                <!-- Add more table headers as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/api/viewdoctors')
+            .then(response => response.json())
+            .then(data => {
+                const doctorTable = document.getElementById('doctorTable');
+                const tbody = doctorTable.querySelector('tbody');
+                
+                data.forEach(doctor => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${doctor.id}</td>
+                        <td>${doctor.email}</td>
+                        <td>${doctor.name}</td>
+                        <td>${doctor.specialist}</td>
+                        <td><a href='bookdoctor.html?docemail=${doctor.email}'>Book</a></td>
+                        <!-- Add more table cells as needed -->
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>

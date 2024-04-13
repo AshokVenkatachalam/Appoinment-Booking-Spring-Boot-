@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Appointment Requests</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Appointment Requests</h2>
+    <table id="appointmentTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient Email</th>
+                <th>Doctor Email</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Flag</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('api/viewappointmentrequet')
+            .then(response => response.json())
+            .then(data => {
+                const appointmentTable = document.getElementById('appointmentTable');
+                const tbody = appointmentTable.querySelector('tbody');
+                
+                data.forEach(appointment => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${appointment.id}</td>
+                        <td>${appointment.patemail}</td>
+                        <td>${appointment.docemail}</td>
+                        <td>${appointment.date}</td>
+                        <td>${appointment.time}</td>
+                        <td>${appointment.flag}</td>
+                        <td>
+                            ${
+                                appointment.flag === 1 ? 
+                                `<button onclick="bookAppointment('${appointment.patemail}','${appointment.date}','${appointment.time}')">Book</button>` : 
+                                ''
+                            }
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        function bookAppointment(docEmail,date,time) {
+            const appointmentData = {
+            		patemail: docEmail,
+            		date:date,
+            		time:time
+            		// Include the docemail in the appointmentData object
+                // Add any other data you want to send to the API here
+            };
+            
+            fetch('/api/confirmappointment', {
+                method: 'POST', // Change the method as per your API
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any additional headers if required
+                },
+                body: JSON.stringify(appointmentData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful response
+                    console.log('Appointment booked successfully');
+                    alert('Appointment booked successfully');
+                    
+                    // Optionally update the UI to reflect the booking status
+                } else {
+                    // Handle error response
+                    console.error('Error booking appointment:', response.statusText);
+                    // Optionally display an error message to the user
+                }
+            })
+            .catch(error => {
+                // Handle network errors
+                console.error('Network error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
