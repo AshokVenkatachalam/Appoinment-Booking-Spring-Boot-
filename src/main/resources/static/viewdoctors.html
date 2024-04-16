@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Doctors</title>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+   
     <style>
         table {
             width: 100%;
@@ -17,11 +21,33 @@
         th {
             background-color: #f2f2f2;
         }
+        body {
+	background-image: url('images/9008016.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+
+}
     </style>
 </head>
 <body>
-    <h2>Doctors List</h2>
-    <table id="doctorTable">
+<div style="background-color: #068C98">
+		<h1 style="padding: 1%; margin: 0px" ><b>View Doctors</b></h1>
+	</div>
+		<nav class="navbar navbar-default" style="background-color: #99E6DE"> 
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Appointment</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li ><a href="patdashboard.html">Home</a></li>
+      <li><a href="viewbookedapoointment.html">Booked Appointments</a></li>
+      <li class="active"><a href="viewdoctors.html">View Doctors</a></li>
+      <li><a href="index.html">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+    <table id="doctorTable" class="table" style="background-color: white;">
         <thead>
             <tr>
                 <th>ID</th>
@@ -36,6 +62,7 @@
             <!-- Table rows will be dynamically populated here -->
         </tbody>
     </table>
+    </div>
 
     <script>
         fetch('/api/viewdoctors')

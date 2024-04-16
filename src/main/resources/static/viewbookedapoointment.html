@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Booked Appointments</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
         table {
             width: 100%;
@@ -12,28 +15,51 @@
         th, td {
             border: 1px solid #dddddd;
             text-align: left;
-            padding: 8px;
+            padding: 8px;background-color: white;
         }
         th {
             background-color: #f2f2f2;
         }
+        body {
+            background-image: url('images/9008016.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
     </style>
 </head>
 <body>
-    <h2>Booked Appointments</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Doctor Email</th>
-                <th>Flag</th> <!-- Added flag column header -->
-            </tr>
-        </thead>
-        <tbody id="appointmentsTableBody">
-            <!-- Appointments data will be dynamically populated here -->
-        </tbody>
-    </table>
+    <div style="background-color: #068C98">
+        <h1 style="padding: 1%; margin: 0px"><b>Welcome to the Doctor Home</b></h1>
+    </div>
+    <nav class="navbar navbar-default" style="background-color: #99E6DE">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Appointment</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li ><a href="patdashboard.html">Home</a></li>
+                <li class="active"><a href="viewbookedapoointment.html">Booked Appointments</a></li>
+                <li><a href="viewdoctors.html">View Doctors</a></li>
+                <li><a href="index.html">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Doctor Email</th>
+                    <th>Flag</th>
+                    <th>Delete</th> <!-- Added delete column header -->
+                </tr>
+            </thead>
+            <tbody id="appointmentsTableBody">
+                <!-- Appointments data will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
 
     <script>
         fetch('/api/viewbookedapoointment')
@@ -56,15 +82,43 @@
                 doctorEmailCell.textContent = appointment.docemail;
                 row.appendChild(doctorEmailCell);
 
-                // Add flag column
                 const flagCell = document.createElement('td');
                 flagCell.textContent = appointment.flag === 1 ? 'Not Confirmed' : 'Confirmed';
                 row.appendChild(flagCell);
+
+                const deleteCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'btn btn-danger btn-xs'; // Bootstrap button styling
+                deleteButton.addEventListener('click', () => deleteAppointment(appointment.id)); // Attach event listener to delete button
+                deleteCell.appendChild(deleteButton);
+                row.appendChild(deleteCell);
 
                 appointmentsTableBody.appendChild(row);
             });
         })
         .catch(error => console.error('Error:', error));
+
+        function deleteAppointment(appointmentId) {
+            fetch(`/api/deleteappointment/${appointmentId}`, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful response
+                    console.log(`Appointment with ID ${appointmentId} deleted successfully`);
+                    // Optionally update the UI to reflect the deletion
+                } else {
+                    // Handle error response
+                    console.error('Error deleting appointment:', response.statusText);
+                    // Optionally display an error message to the user
+                }
+            })
+            .catch(error => {
+                // Handle network errors
+                console.error('Network error:', error);
+            });
+        }
     </script>
 </body>
 </html>

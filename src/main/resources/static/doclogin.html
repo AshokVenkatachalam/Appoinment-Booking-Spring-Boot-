@@ -4,18 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Login</title>
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- Custom styles for background image -->
+<style>
+body {
+	background-image: url('images/9008016.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+
+}
+
+.form-group {
+	margin-bottom: 0px;
+}
+</style>
 </head>
 <body>
+<div class="bg-white"
+		style="width: 32%; margin-left: 7%; margin-top: 6%; border-radius: 16px;">
+		
+		
+    
+    <form id="loginForm" style="padding: 20px;" onsubmit="loginDoctor(event)">
     <h2>Doctor Login</h2>
-    <form id="loginForm" onsubmit="loginDoctor(event)">
+    <div class="form-group" style="margin-bottom: 0px;">
         <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-
+        <input type="email" id="email" class="form-control" name="email" required><br>
+</div>
+ <div class="form-group" style="margin-bottom: 0px;">
         <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" class="form-control" name="password" required><br>
+        </div>
+        			<div>
+			<label>New User?</label>
+			<a   href="DocRegister.html"> Sign-Up</a><label style="margin-left: 2%">here</label></div>
 
-        <input type="submit" value="Login">
+ <div class="form-group" style="margin-bottom: 0px;">
+        <input type="submit" class="form-control btn btn-primary" value="Login">
+        </div>
     </form>
+    
+    </div>
 
     <script>
         function loginDoctor(event) {

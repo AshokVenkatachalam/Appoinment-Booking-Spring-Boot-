@@ -4,22 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Appointment Requests</title>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #dddddd;
             text-align: left;
+            padding: 8px;background-color: white;
         }
         th {
             background-color: #f2f2f2;
         }
+        body {
+            background-image: url('images/9008016.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
     </style>
 </head>
 <body>
+<div style="background-color: #068C98">
+		<h1 style="padding: 1%; margin: 0px" ><b>Welcome to the Doctor Home</b></h1>
+	</div>
+	
+	<nav class="navbar navbar-default" style="background-color: #99E6DE"> 
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Appointment</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li ><a href="dashboard.html">Home</a></li>
+      <li class="active"><a href="viewappointmentrequest.html">View Appointments</a></li>
+      <li><a href="index.html">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
     <h2>Appointment Requests</h2>
     <table id="appointmentTable">
         <thead>
@@ -37,6 +62,8 @@
             <!-- Table rows will be dynamically populated here -->
         </tbody>
     </table>
+    
+    </div>
 
     <script>
         fetch('api/viewappointmentrequet')
@@ -57,7 +84,7 @@
                         <td>
                             ${
                                 appointment.flag === 1 ? 
-                                `<button onclick="bookAppointment('${appointment.patemail}','${appointment.date}','${appointment.time}')">Book</button>` : 
+                                `<button class='btn btn-primary' onclick="bookAppointment('${appointment.patemail}','${appointment.date}','${appointment.time}')">Book</button>` : 
                                 ''
                             }
                         </td>

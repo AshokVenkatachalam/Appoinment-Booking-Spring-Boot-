@@ -116,7 +116,6 @@ public class PatConroller {
 		
 		String sessionemail = "ashokpat@gmail.com";
 		
-		
 		List<AppointmentModel> getpateemail= appointrepo.findByPatemail(sessionemail);
 		
 		if (getpateemail.isEmpty()) {
@@ -125,11 +124,30 @@ public class PatConroller {
 		} else {
 			
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(getpateemail);
+		}
+	}
+	
+	
+	@GetMapping("/deleteappointment/{id}")
+	public ResponseEntity<String> deleteAppointment(@PathVariable Long id){
+		
+		boolean checkid= appointrepo.existsById(id);
+		
+		if (checkid) {
+			
+			appointrepo.deleteById(id);
+			
+			return	ResponseEntity.status(HttpStatus.ACCEPTED).body("Appointment Deleted");
+			
+		} else {
+			
+			return	ResponseEntity.status(HttpStatus.ACCEPTED).body("Id not exist");
 
 		}
 		
+
 		
-		
+		 
 	}
 
 }

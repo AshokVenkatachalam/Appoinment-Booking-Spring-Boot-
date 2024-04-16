@@ -1,4 +1,4 @@
-package com.appointment.controller;
+package com.appointment.service;
 
 import java.util.List;
 
@@ -6,20 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.appointment.Repo.AppointmentRepo;
 import com.appointment.Repo.DocRepo;
 import com.appointment.model.AppointmentModel;
 import com.appointment.model.DocModel;
 
-@RestController
-@RequestMapping("/api/")
-public class DocController {
+public class DocService {
+	
 
 	@Autowired
 	private DocRepo docrepo;
@@ -33,7 +29,6 @@ public class DocController {
 //		this.appointmentrepo = appointmentrepo;
 //	}
 
-	@PostMapping("/docregister")
 	public ResponseEntity<String> docRegister(@RequestBody DocModel docmodel) {
 
 		System.out.println("Docregister");
@@ -52,7 +47,6 @@ public class DocController {
 		}
 	}
 
-	@PostMapping("/doclogin")
 	public ResponseEntity<String> docLogin(@RequestBody DocModel docmodel) {
 
 		DocModel checkuser = docrepo.findByEmail(docmodel.getEmail());
@@ -67,7 +61,6 @@ public class DocController {
 		}
 	}
 
-	@GetMapping("/viewappointmentrequet")
 	public ResponseEntity<?> viewAppointmentRequest() {
 
 		String sessionemail = "ashokvenkat2001@gmail.com";
@@ -82,7 +75,7 @@ public class DocController {
 
 	}
 
-	@PostMapping("/confirmappointment")
+
 	public ResponseEntity<String> confirmAppointment(@RequestBody AppointmentModel appoinmentmodel) {
 
 		String sessionemail = "ashokvenkat2001@gmail.com";

@@ -3,46 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Available Cabs</title>
-</head>
-<body>
-    <h2>Available Cabs</h2>
-    <table id="cabTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cab Name</th>
-                <th>Cab Number</th>
-                <th>Driver Name</th>
-                <th>Flag</th>
-            </tr>
-        </thead>
-        <tbody id="cabTableBody">
-            <!-- Table rows will be dynamically populated here -->
-        </tbody>
-    </table>
+    <title>Dashboard</title>
+   <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+body {
+	background-image: url('images/9008016.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 
-    <script>
-        fetch('/api/availablecabs')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Data:', data); // Log the data to the console
-                const cabTableBody = document.getElementById('cabTableBody');
-                data.forEach(cab => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${cab.id}</td>
-                        <td>${cab.cabName}</td>
-                        <td>${cab.cabNumber}</td>
-                        <td>${cab.driverName}</td>
-                        <td>${cab.flag}</td>
-                    `;
-                    cabTableBody.appendChild(row);
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
+}
+</style>
+</head>
+<div style="background-color: #068C98">
+		<h1 style="padding: 1%; margin: 0px" ><b>Welcome to Online Appointment Booking</b></h1>
+	</div>
+<body>
+
+	<nav class="navbar navbar-default" style="background-color: #99E6DE"> 
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Appointment</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="index.html">Home</a></li>
+      <li><a href="patlogin.html">Patient Login</a></li>
+      <li><a href="doclogin.html">Doctor Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+
 </body>
 </html>
