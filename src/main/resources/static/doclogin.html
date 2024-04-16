@@ -70,7 +70,7 @@ body {
                     // Redirect to dashboard or any other page after successful login
                     window.location.href = 'http://localhost:8089/dashboard.html';
                 } else if (response.status === 400) {
-                    alert('Wrong Password');
+                	alert('Login Failed');
                 } else {
                     alert('Login Failed');
                 }

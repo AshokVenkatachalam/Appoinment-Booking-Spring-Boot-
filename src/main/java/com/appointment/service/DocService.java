@@ -2,9 +2,13 @@ package com.appointment.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,8 +18,8 @@ import com.appointment.Repo.DocRepo;
 import com.appointment.model.AppointmentModel;
 import com.appointment.model.DocModel;
 
+@Service
 public class DocService {
-	
 
 	@Autowired
 	private DocRepo docrepo;
@@ -29,13 +33,13 @@ public class DocService {
 //		this.appointmentrepo = appointmentrepo;
 //	}
 
-	public ResponseEntity<String> docRegister(@RequestBody DocModel docmodel) {
+	public boolean docRegister(DocModel docmodel) {
 
 		System.out.println("Docregister");
 
 		boolean chaeckdoc = docrepo.existsByEmail(docmodel.getEmail());
 		if (chaeckdoc) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email Exist");
+			return true;
 		} else {
 			DocModel save = new DocModel();
 			save.setEmail(docmodel.getEmail());
@@ -43,70 +47,61 @@ public class DocService {
 			save.setPassword(docmodel.getPassword());
 			save.setSpecialist(docmodel.getSpecialist());
 			docrepo.save(save);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Registration Success");
+			return false;
 		}
 	}
 
-	public ResponseEntity<String> docLogin(@RequestBody DocModel docmodel) {
+	public boolean docLogin(DocModel docmodel, HttpSession session) {
 
 		DocModel checkuser = docrepo.findByEmail(docmodel.getEmail());
 		if (checkuser != null) {
+
 			if (checkuser.getPassword().equals(docmodel.getPassword())) {
-				return ResponseEntity.status(HttpStatus.ACCEPTED).body("Login Success");
+
+				session.setAttribute("email", checkuser.getEmail());
+				return true;
 			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong Password");
+				return false;
 			}
 		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Failed");
+			return false;
 		}
 	}
 
-	public ResponseEntity<?> viewAppointmentRequest() {
+	public Object viewAppointmentRequest(HttpSession session) {
 
-		String sessionemail = "ashokvenkat2001@gmail.com";
+		String sessionemail = (String) session.getAttribute("email");
 
 		List<AppointmentModel> checkdocemail = appointmentrepo.findByDocemail(sessionemail);
 
 		if (checkdocemail.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("No Appointments");
+			return false;
 		} else {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(checkdocemail);
+			return checkdocemail;
 		}
 
 	}
 
+	public String confirmAppointment(AppointmentModel appoinmentmodel, HttpSession session) {
 
-	public ResponseEntity<String> confirmAppointment(@RequestBody AppointmentModel appoinmentmodel) {
-
-		String sessionemail = "ashokvenkat2001@gmail.com";
-
+		String sessionemail = (String) session.getAttribute("email");
 		AppointmentModel appointmentfind = appointmentrepo.findByDocemailAndPatemail(sessionemail,
 				appoinmentmodel.getPatemail());
-
 		if (appointmentfind != null && appointmentfind.getFlag() == 1) {
 
 			if (appointmentfind.getDate().equals(appoinmentmodel.getDate())
 					&& appointmentfind.getTime().equals(appoinmentmodel.getTime())) {
-				
 				appointmentfind.setFlag(2);
-				
 				appointmentrepo.save(appointmentfind);
-				
-				return ResponseEntity.status(HttpStatus.ACCEPTED).body("Flag Updated");
-
+				return "Flag Updated";
 			} else {
-
-				
-				return ResponseEntity.status(HttpStatus.ACCEPTED).body("ALready Updated in this date or time");
-				
+				return "ALready Updated in this date or time";
 			}
+		} else {
 
-		}else {
-			
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("ALready updated or DB ISSUE");
+			return "ALready updated or DB ISSUE";
 		}
 
-		
 	}
 
 }
